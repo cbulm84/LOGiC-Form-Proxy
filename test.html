@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LOGiC Form Proxy - Test Page</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    h1 { color: #333; }
+    .test-section {
+      background: #f5f5f5;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+    button {
+      background: #0070f3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover { background: #0051cc; }
+    #result {
+      background: white;
+      padding: 15px;
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      font-family: monospace;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>LOGiC Form Proxy - Database Test</h1>
+
+  <div class="test-section">
+    <h2>Test Supabase Connection</h2>
+    <p>Click a button to test fetching affiliate data from Supabase:</p>
+
+    <button onclick="testAffiliate('monster-michael-todd', 'monster_michael_todd')">
+      Test: monster_michael_todd.monster-michael-todd
+    </button>
+
+    <button onclick="testAffiliate('grinders-fitness', 'grinders_fitness')">
+      Test: grinders_fitness.grinders-fitness
+    </button>
+
+    <button onclick="testAffiliate('achievement-fitness', 'achievement_fitness')">
+      Test: achievement_fitness.achievement-fitness
+    </button>
+
+    <button onclick="listAll()">
+      List All Active Affiliates
+    </button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = '{{SUPABASE_URL}}';
+    const SUPABASE_ANON_KEY = '{{SUPABASE_ANON_KEY}}';
+
+    async function testAffiliate(clientSlug, affiliateSlug) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = 'Loading...';
+
+      try {
+        const query = `client_slug=eq.${clientSlug}&tag=eq.${affiliateSlug}&status=eq.active&select=client_slug,tag,form_url`;
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/sellerportal_affiliate_codes?${query}`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!res.ok) throw new Error(`API Error: ${res.status}`);
+
+        const data = await res.json();
+
+        resultDiv.textContent = `✓ SUCCESS\n\nQuery: ${clientSlug}.${affiliateSlug}\n\nResult:\n${JSON.stringify(data, null, 2)}`;
+      } catch (err) {
+        resultDiv.textContent = `✗ ERROR\n\n${err.message}`;
+      }
+    }
+
+    async function listAll() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = 'Loading...';
+
+      try {
+        const query = `status=eq.active&select=client_slug,tag,form_url&limit=10`;
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/sellerportal_affiliate_codes?${query}`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!res.ok) throw new Error(`API Error: ${res.status}`);
+
+        const data = await res.json();
+
+        resultDiv.textContent = `✓ SUCCESS\n\nFound ${data.length} active affiliates:\n\n${JSON.stringify(data, null, 2)}`;
+      } catch (err) {
+        resultDiv.textContent = `✗ ERROR\n\n${err.message}`;
+      }
+    }
+  </script>
+</body>
+</html>

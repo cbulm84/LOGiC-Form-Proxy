@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; frame-src https://*.gohighlevel.com https://*.hlpages.com https://*.logichealth.co; script-src 'unsafe-inline'; connect-src https://*.supabase.co; style-src 'unsafe-inline';">
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://form.gohighlevel.com" crossorigin>
+  <link rel="dns-prefetch" href="https://form.gohighlevel.com">
+
+  <title>Loading...</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    iframe {
+      border: 0;
+      height: 100vh;
+      width: 100vw;
+      display: block;
+    }
+
+    /* Add padding on mobile devices */
+    @media (max-width: 768px) {
+      body {
+        padding: 0 12px;
+      }
+
+      iframe {
+        width: calc(100vw - 24px);
+      }
+    }
+
+    #error {
+      display: none;
+      padding: 2rem;
+      text-align: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #666;
+      max-width: 500px;
+      margin: 4rem auto;
+    }
+
+    #error h2 {
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    #error p {
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="ghl-form" title="Form" allow="clipboard-read; clipboard-write"></iframe>
+
+  <div id="error">
+    <h2>Page Not Found</h2>
+    <p>This affiliate page is not configured or has been disabled.</p>
+  </div>
+
+  <script>
+    (async function() {
+      // Extract subdomain from host
+      // Expected format: client-slug.domain.com or client-slug.domain.com/hhc
+      const parts = location.host.split('.');
+      const path = location.pathname;
+
+      let clientSlug;
+
+      if (parts.length >= 2) {
+        clientSlug = parts[0];  // e.g., 'monster-michael-todd'
+      } else {
+        showError();
+        return;
+      }
+
+      // Determine which form to load based on path
+      // / or root = form_url_short (default/short form)
+      // /hhc = form_url (Health History & Consent - long form)
+      const formField = path === '/hhc' ? 'form_url' : 'form_url_short';
+
+      // Supabase configuration (injected at build time)
+      const SUPABASE_URL = '{{SUPABASE_URL}}';
+      const SUPABASE_ANON_KEY = '{{SUPABASE_ANON_KEY}}';
+
+      try {
+        // Query Supabase for affiliate configuration
+        const query = `client_slug=eq.${clientSlug}&status=eq.active&select=${formField}`;
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/sellerportal_affiliate_codes?${query}`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!res.ok) throw new Error('API request failed');
+
+        const data = await res.json();
+        if (!data || data.length === 0) throw new Error('No affiliate found');
+
+        const baseUrl = data[0][formField];
+
+        // Whitelist of allowed query parameters to pass through
+        const allowedParams = new Set([
+          'affiliate',
+          'master',
+          'utm_source',
+          'utm_medium',
+          'utm_campaign',
+          'utm_term',
+          'utm_content',
+          'gclid',
+          'fbclid',
+          'ref',
+          'source'
+        ]);
+
+        // Build final iframe URL with passthrough params
+        const iframeUrl = new URL(baseUrl);
+        const currentParams = new URLSearchParams(location.search);
+
+        for (const [key, value] of currentParams) {
+          if (allowedParams.has(key)) {
+            iframeUrl.searchParams.set(key, value);
+          }
+        }
+
+        // Preserve hash if present
+        const finalUrl = iframeUrl.toString() + (location.hash || '');
+
+        // Set iframe source
+        document.getElementById('ghl-form').src = finalUrl;
+
+        // Update page title
+        document.title = clientSlug;
+
+      } catch (err) {
+        showError();
+        console.error('Failed to load affiliate page:', err);
+      }
+
+      function showError() {
+        document.getElementById('ghl-form').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+      }
+    })();
+  </script>
+</body>
+</html>

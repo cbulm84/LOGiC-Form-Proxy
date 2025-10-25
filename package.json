@@ -1,0 +1,12 @@
+{
+  "name": "logic-form-proxy",
+  "version": "1.0.0",
+  "description": "Wildcard subdomain iframe proxy for white-labeled GHL forms",
+  "scripts": {
+    "dev": "node dev.js",
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
