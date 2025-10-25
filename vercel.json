@@ -30,29 +30,17 @@
       ]
     }
   ],
-  "redirects": [
-    {
-      "source": "/:path((?:F|f)(?:O|o)(?:R|r)(?:M|m))",
-      "destination": "/form",
-      "permanent": false
-    },
-    {
-      "source": "/:path((?:H|h)(?:H|h)(?:C|c))",
-      "destination": "/hhc",
-      "permanent": false
-    }
-  ],
   "rewrites": [
     {
       "source": "/",
       "destination": "/index.html"
     },
     {
-      "source": "/form/:path*",
+      "source": "/form",
       "destination": "/form.html"
     },
     {
-      "source": "/hhc/:path*",
+      "source": "/hhc",
       "destination": "/hhc.html"
     }
   ]
