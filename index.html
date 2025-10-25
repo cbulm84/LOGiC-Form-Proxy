@@ -87,6 +87,13 @@
         return;
       }
 
+      // Redirect root domain (no subdomain) to main website
+      // e.g., yourdomain.com -> logichealth.co
+      if (parts.length === 2 || clientSlug === 'www') {
+        window.location.href = 'https://www.logichealth.co';
+        return;
+      }
+
       // Determine which form to load based on path
       // / or root = form_url_short (default/short form)
       // /hhc = form_url (Health History & Consent - long form)
