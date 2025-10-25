@@ -1,16 +1,34 @@
 # LOGiC Form Proxy
 
-Simple wildcard subdomain system for white-labeled iframe embeds. Maps client subdomains to Go High Level forms with URL parameter passthrough.
+A wildcard subdomain proxy system for white-labeled affiliate landing pages and GHL forms for LOGiC Health.
+
+## Project Status
+
+**Current Implementation:** Landing page with two CTA buttons leading to separate form pages.
+
+Each affiliate gets their own subdomain (e.g., `affiliate-name.affiliates.logichealth.co`) with:
+- Personalized landing page with dynamic affiliate name from database
+- LOGiC Health branding (teal #017976, gold #F9BB05, Montserrat font)
+- Two call-to-action buttons: "Start Your Application" and "Complete Health History Form"
+- Fully responsive design
 
 ## How It Works
 
 ```
-User visits: acme.healthclient.yourdomain.com?affiliate=XYZ
+User visits: affiliate-name.affiliates.logichealth.co
+│
+├─ / (root)           → Landing page with affiliate name + two CTA buttons
+├─ /form              → Short application form (iframe)
+├─ /hhc               → Health History & Consent form (iframe)
+└─ /test              → Database connection test page
 
-1. Static HTML loads from Vercel
-2. JavaScript extracts: client='healthclient', affiliate='acme'
-3. Queries Supabase for GHL form URL
-4. Renders full-page iframe with params appended
+Flow:
+1. Static HTML loads from Vercel (edge cached)
+2. JavaScript extracts client_slug from subdomain
+3. Queries Supabase for affiliate data (company_name, form URLs)
+4. Personalizes landing page with affiliate's company name
+5. User clicks button → navigates to /form or /hhc
+6. Form page loads iframe with URL from database
 ```
 
 ## Tech Stack

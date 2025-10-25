@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Wildcard subdomain iframe proxy for white-labeled GHL forms",
   "scripts": {
-    "dev": "node dev.js",
-    "build": "node build.js"
+    "dev": "node scripts/dev.js",
+    "build": "node scripts/build.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5"

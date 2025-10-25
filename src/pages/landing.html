@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; connect-src https://*.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data:; base-uri 'self'; object-src 'none'; frame-ancestors 'none';">
+
+  <title>Loading...</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --teal: #017976;
+      --gold: #F9BB05;
+      --logic-black: #000000;
+      --logic-gray: #545454;
+      --logic-white: #FFFFFF;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Helvetica Neue', sans-serif;
+      background-color: var(--logic-black);
+      color: var(--logic-white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 300;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(249, 187, 5, 0.1);
+      padding: 1rem 2rem;
+    }
+
+    .header-logo {
+      max-width: 200px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 8rem 1rem 2rem;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.95) 40%, rgba(1,121,118,0.15) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at top right, rgba(249,187,5,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 1000px;
+      z-index: 1;
+    }
+
+    .partnership-badge {
+      display: inline-block;
+      padding: 0.5rem 1.5rem;
+      background: rgba(249, 187, 5, 0.1);
+      border: 1px solid rgba(249, 187, 5, 0.3);
+      border-radius: 50px;
+      margin-bottom: 2rem;
+      font-size: clamp(0.875rem, 1.5vw, 1rem);
+      color: var(--gold);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .hero h1 .highlight {
+      color: var(--gold);
+      font-weight: 300;
+    }
+
+    .hero h1 .partnership {
+      font-size: clamp(1.5rem, 3.5vw, 3rem);
+      display: block;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 0.5rem;
+    }
+
+    .hero p {
+      font-size: clamp(1.125rem, 2.5vw, 1.75rem);
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 1rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+    }
+
+    .hero-cta-text {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 3rem;
+      font-weight: 400;
+    }
+
+    .benefits-list {
+      margin-top: 3rem;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .benefits-intro {
+      font-size: clamp(1rem, 1.5vw, 1.125rem);
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+      text-align: center;
+    }
+
+    .benefits-list ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .benefits-list li {
+      display: inline-block;
+      padding: 0.6rem 1.25rem;
+      background: rgba(249, 187, 5, 0.1);
+      border: 1px solid rgba(249, 187, 5, 0.3);
+      border-radius: 50px;
+      font-size: clamp(0.8rem, 1.2vw, 0.9rem);
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    @media (min-width: 768px) {
+      .benefits-list ul {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: nowrap;
+        gap: 0.75rem;
+      }
+
+      .benefits-list li {
+        flex: 0 1 auto;
+      }
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      letter-spacing: 0.025em;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px 0 rgba(0, 0, 0, 0.15);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f9bb05 0%, #f9bb05 50%, #f9bb05 100%);
+      color: #000000;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #f9bb05 0%, #f9bb05 30%, #017976 100%);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #017976 0%, #017976 50%, #017976 100%);
+      color: #ffffff;
+      border: none;
+    }
+
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, #017976 0%, #015f5c 50%, #013d3b 100%);
+    }
+
+    .btn .arrow {
+      margin-left: 0.5rem;
+      transition: transform 350ms cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-block;
+    }
+
+    .btn:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    /* About Section */
+    .about-section {
+      padding: 4rem 1rem;
+      background-color: rgba(255, 255, 255, 0.03);
+      text-align: center;
+    }
+
+    .about-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .about-section h2 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      margin-bottom: 1.5rem;
+      color: var(--gold);
+      font-weight: 300;
+    }
+
+    .about-section p {
+      font-size: clamp(1rem, 1.5vw, 1.25rem);
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+
+    /* Bottom CTA Section */
+    .bottom-cta {
+      padding: 3rem 1rem;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.03);
+      border-top: 1px solid rgba(249, 187, 5, 0.1);
+    }
+
+    .bottom-cta p {
+      font-size: clamp(1rem, 1.5vw, 1.125rem);
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 2rem;
+    }
+
+    .btn-small {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9rem;
+      min-width: 200px;
+    }
+
+    /* Features Grid */
+    .features {
+      padding: 4rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .features h2 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      text-align: center;
+      margin-bottom: 3rem;
+      color: var(--gold);
+      font-weight: 300;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2rem;
+      border-radius: 12px;
+      border: 1px solid rgba(249, 187, 5, 0.2);
+      transition: all 300ms ease;
+    }
+
+    .feature-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(249, 187, 5, 0.4);
+      transform: translateY(-4px);
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    .feature-card p {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+    }
+
+    /* Error State */
+    #error {
+      padding: 2rem;
+      text-align: center;
+      color: #666;
+      max-width: 500px;
+      margin: 4rem auto;
+    }
+
+    #error h2 {
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    #error p {
+      line-height: 1.6;
+    }
+
+    .loading {
+      opacity: 0;
+      animation: fadeIn 0.5s ease-in forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    /* Responsive */
+    @media (min-width: 640px) {
+      .button-group {
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      .btn {
+        width: auto;
+        min-width: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="landing-page" class="loading is-hidden">
+    <!-- Header -->
+    <header class="header">
+      <img src="/BlackBackgroundLogoWide.webp" alt="LOGiC Health" class="header-logo">
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="partnership-badge">
+          <span id="affiliate-name-badge">Trusted</span> Partner + <span style="font-weight: inherit;">LOG<span style="color: var(--gold);">i</span>C</span> <span style="color: var(--gold);">Health</span>
+        </div>
+        <h1>
+          Transform Your Health<br>
+          <span class="partnership">with <span class="highlight" id="affiliate-name">Your Partner</span> + <span style="color: white;">LOG<span style="color: var(--gold);">i</span>C</span> <span style="color: var(--gold);">Health</span></span>
+        </h1>
+        <p>
+          Personalized healthcare, expert guidance, and real results—delivered 100% online.
+        </p>
+        <p class="hero-cta-text">
+          Start your journey to more energy, better performance, and optimal health.
+        </p>
+        <div class="button-group">
+          <a href="/form" class="btn btn-primary">
+            Start Your Journey
+            <span class="arrow">→</span>
+          </a>
+          <a href="/hhc" class="btn btn-secondary">
+            Complete Health History
+            <span class="arrow">→</span>
+          </a>
+        </div>
+
+        <div class="benefits-list">
+          <p class="benefits-intro">Whether you're looking to:</p>
+          <ul>
+            <li>Reclaim your energy and vitality</li>
+            <li>Optimize performance and recovery</li>
+            <li>Achieve your wellness goals</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section">
+      <div class="about-content">
+        <h2>About <span style="color: white;">LOG<span style="color: var(--gold);">i</span>C</span> <span style="color: var(--gold);">Health</span></h2>
+        <p>
+          LOGiC Health is an online health optimization company that helps you understand what's actually happening in your body and addresses it with science-backed protocols. You get personalized treatment plans, expert medical support, and continuous adjustments—all designed around your unique health picture.
+        </p>
+        <p>
+          Partnering with <span id="affiliate-name-2"></span>, we're making this level of personalized care accessible to people who are serious about reclaiming their health.
+        </p>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <h2>What You'll Actually Experience</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>Enhanced Energy & Mental Clarity</h3>
+          <p>
+            Most people notice real improvements in energy, focus, and how they feel day-to-day once their personalized protocol kicks in. This isn't about quick fixes—it's about sustainable changes that stick.
+          </p>
+        </div>
+        <div class="feature-card">
+          <h3>Get Answers, Not Guesses</h3>
+          <p>
+            Comprehensive testing shows exactly what's out of balance in your body. Your care team uses this data to create a treatment plan tailored to you, not a generic protocol that works for everyone.
+          </p>
+        </div>
+        <div class="feature-card">
+          <h3>Have Someone in Your Corner</h3>
+          <p>
+            You're not navigating this alone. Your dedicated care team monitors your progress, adjusts your plan as needed, and is available when you have questions. Real support from real medical professionals who know your case.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom CTA Section -->
+    <section class="bottom-cta">
+      <p>Ready to get started?</p>
+      <div class="button-group">
+        <a href="/form" class="btn btn-primary btn-small">
+          Start Your Journey
+          <span class="arrow">→</span>
+        </a>
+        <a href="/hhc" class="btn btn-secondary btn-small">
+          Health History Form
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <div id="error" class="is-hidden">
+    <h2>Page Not Found</h2>
+    <p>This affiliate page is not configured or has been disabled.</p>
+  </div>
+
+  <noscript>
+    <style>
+      #landing-page { display: block !important; }
+    </style>
+  </noscript>
+
+  <script src="/assets/js/landing.js" defer></script>
+</body>
+</html>
